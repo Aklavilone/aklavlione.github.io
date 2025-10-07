@@ -1,16 +1,18 @@
 /* Service Worker: предкэш + ленивое кеширование изображений из assets/ */
 
-const CACHE_VERSION = 'v1.0.1'; // ▲ обновили версию — это принудительно инвалидирует старый кэш
+const CACHE_VERSION = 'v1.0.4';            // ↑ обнови версию
 const STATIC_CACHE = `static-${CACHE_VERSION}`;
 const RUNTIME_IMG_CACHE = `img-${CACHE_VERSION}`;
 
-// content.js теперь грузим с версией ?v=2 — добавляем и его в предкэш
 const PRECACHE_URLS = [
   './',
   './index.html',
   './manifest.webmanifest',
   './sw.js',
-  './content.js?v=2'
+  './content.js?v=3',
+  './icons/apple-touch-icon.png',  // ← добавлено
+  './icons/icon-192.png',          // ← добавлено (для Android/Chrome)
+  './icons/icon-512.png'           // ← добавлено
 ];
 
 self.addEventListener('install', event => {
@@ -94,3 +96,4 @@ self.addEventListener('fetch', event => {
     }
   })());
 });
+
