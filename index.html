@@ -33,14 +33,17 @@
       --fade-ms:1000ms;     /* 800–1200 мс */
     }
     *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;
-      font-family:'Comfortaa', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-      color:var(--text);
-      background:linear-gradient(180deg,var(--pink-50),var(--pink-100) 60%, var(--pink-200));
-      -webkit-tap-highlight-color:transparent;
-    }
+    html, body{
+  min-height:100%;
+  height:auto;                 /* позволяем странице расти выше вьюпорта */
+}
+html{
+  background: linear-gradient(180deg,var(--pink-50),var(--pink-100) 60%, var(--pink-200));
+  background-repeat:no-repeat; /* не даём повторяться при скролле */
+}
+body{
+  background:inherit;          /* тянем тот же градиент и на body */
+}
 
     /* ===== Layout ===== */
     #app{ min-height:100svh; display:flex; flex-direction:column; }
