@@ -1,0 +1,25 @@
+{
+  "name": "Нежный День",
+  "short_name": "НежныйДень",
+  "description": "Минимальный PWA с нежной палитрой: старт, «Дни», офлайн и установка на Домой.",
+  "start_url": "./?source=pwa",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#fff1f2",
+  "theme_color": "#fff1f2",
+  "icons": [
+    {
+      "src": "data:image/svg+xml;utf8,<?xml version='1.0' encoding='UTF-8'?><svg xmlns='http://www.w3.org/2000/svg' width='192' height='192'><rect width='100%25' height='100%25' fill='%23ffe4e6'/><text x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-size='88' fill='%23fb7185'>❤</text></svg>",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "data:image/svg+xml;utf8,<?xml version='1.0' encoding='UTF-8'?><svg xmlns='http://www.w3.org/2000/svg' width='512' height='512'><rect width='100%25' height='100%25' fill='%23fecdd3'/><text x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-size='240' fill='%23fb7185'>❤</text></svg>",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
