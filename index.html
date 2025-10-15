@@ -7,8 +7,12 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Нежный День">
-  <!-- iOS icon как data URL (однотонный розовый) -->
+
+  <!-- ИКОНКИ (реальные PNG-файлы) -->
   <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512.png">
+
   <link rel="manifest" href="manifest.webmanifest" />
 
   <!-- Нежные шрифты -->
@@ -24,32 +28,34 @@
       --pink-100:#ffe4e6;
       --pink-200:#fecdd3;
       --accent:#fb7185;
-      --text:#374151;       /* тёмно-серый */
+      --text:#374151;
       --muted:#6b7280;
       --gray-dark:#1f2937;
       --gray:#9ca3af;
       --gray-light:#e5e7eb;
-      --radius:14px;        /* скругление 12–16px */
-      --fade-ms:1000ms;     /* 800–1200 мс */
+      --radius:14px;
+      --fade-ms:1000ms;
     }
     *{box-sizing:border-box}
-    html, body{
-  min-height:100%;
-  height:auto;                 /* позволяем странице расти выше вьюпорта */
-}
-html{
-  background: linear-gradient(180deg,var(--pink-50),var(--pink-100) 60%, var(--pink-200));
-  background-repeat:no-repeat; /* не даём повторяться при скролле */
-}
-body{
-  background:inherit;          /* тянем тот же градиент и на body */
-}
 
-    /* ===== Layout ===== */
+    /* Фон тянется на длинных страницах (iOS fix) */
+    html, body{ min-height:100%; height:auto; }
+    html{
+      background: linear-gradient(180deg,var(--pink-50),var(--pink-100) 60%, var(--pink-200));
+      background-repeat:no-repeat;
+    }
+    body{
+      margin:0;
+      font-family:'Comfortaa', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      color:var(--text);
+      background:inherit;
+      -webkit-tap-highlight-color:transparent;
+    }
+
     #app{ min-height:100svh; display:flex; flex-direction:column; }
     .container{ flex:1; display:flex; align-items:stretch; justify-content:center; padding:24px; }
 
-    /* Топбар всегда справа сверху */
+    /* Топбар справа сверху */
     .topbar{
       position:fixed;
       top:env(safe-area-inset-top, 0);
@@ -62,7 +68,7 @@ body{
       padding:0 12px;
       z-index:20;
       background:transparent;
-      pointer-events:none; /* чтобы не мешал, кликабельность вернём на кнопку */
+      pointer-events:none;
     }
     .btn-days{
       pointer-events:auto;
@@ -79,11 +85,11 @@ body{
     }
     .btn-days:active{transform:translateY(1px)}
 
-    /* ===== Стартовый экран ===== */
+    /* Стартовый экран */
     .start{
       display:flex; flex-direction:column; align-items:center; gap:18px;
       text-align:center; max-width:520px; width:100%;
-      user-select:none; margin:auto; /* центрирование внутри .container */
+      user-select:none; margin:auto;
     }
     .hello{
       font-family:'Dancing Script','Comfortaa',cursive;
@@ -91,9 +97,9 @@ body{
       color:#be123c; text-shadow:0 2px 0 rgba(255,255,255,0.6);
     }
     .btn-primary{
-      font:600 16px/1 'Comfortaa', sans-serif; /* средний кегль */
+      font:600 16px/1 'Comfortaa', sans-serif;
       padding:14px 22px;
-      border:1.5px solid rgba(55,65,81,0.2); /* светлая окантовка */
+      border:1.5px solid rgba(55,65,81,0.2);
       background:#fff; color:var(--text);
       border-radius:var(--radius);
       min-width:220px; cursor:pointer;
@@ -105,9 +111,9 @@ body{
     .fade-out{ opacity:0; transform:translateY(8px); transition:opacity var(--fade-ms) ease, transform var(--fade-ms) ease; }
     .hidden{display:none !important}
 
-    /* ===== Экран дня ===== */
+    /* Экран дня */
     .day{
-      position:relative; width:100%; min-height:100%; /* важно: растягиваемся */
+      position:relative; width:100%; min-height:100%;
       display:flex; align-items:center; justify-content:center;
     }
     .media{
@@ -126,12 +132,31 @@ body{
       font-size:22px; text-align:center;
       box-shadow:0 6px 20px rgba(251,113,133,0.22);
       backdrop-filter:blur(8px);
+      z-index:4;
     }
 
-    /* ===== Экран «Дни» ===== */
+    /* Стрелки-навигации по дням */
+    .nav-arrow{
+      position:absolute; top:50%; transform:translateY(-50%);
+      width:44px; height:44px;
+      display:flex; align-items:center; justify-content:center;
+      font-size:22px; line-height:1; font-weight:700;
+      color:var(--accent);
+      background:rgba(255,241,242,0.6);
+      border:1px solid rgba(251,113,133,0.4);  /* рамка как у кнопки «Дни» */
+      border-radius:12px;
+      box-shadow:0 6px 16px rgba(251,113,133,0.18);
+      user-select:none; cursor:pointer; z-index:5;
+      backdrop-filter:saturate(150%) blur(6px);
+    }
+    .nav-arrow:active{ transform:translateY(-50%) scale(0.98); }
+    .nav-arrow.left{ left:10px; }
+    .nav-arrow.right{ right:10px; }
+
+    /* Экран «Дни» */
     .days{ width:100%; max-width:900px; margin:70px auto 24px; padding:0 16px; }
     .grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(96px,1fr)); gap:12px; }
-    @media (max-width:420px){ .grid{ grid-template-columns:repeat(3,1fr);} } /* минимум 3 столбца на телефоне */
+    @media (max-width:420px){ .grid{ grid-template-columns:repeat(3,1fr);} }
     .tile{
       position:relative; aspect-ratio:1/1; border-radius:14px; overflow:hidden;
       display:flex; align-items:center; justify-content:center;
@@ -140,7 +165,7 @@ body{
     }
     .tile:active{transform:scale(0.98)}
     .tile .num{ position:relative; z-index:2; text-shadow:0 2px 8px rgba(0,0,0,.35) }
-    .tile.available{ background:#111827; } /* тёмно-серый */
+    .tile.available{ background:#111827; }
     .tile.future{ background:var(--gray-light); color:#6b7280; pointer-events:none; cursor:default; opacity:.8; }
     .tile.viewed{ background:#000; color:#fff; }
     .tile.viewed .bg{
@@ -163,17 +188,14 @@ body{
   </div>
 
   <script type="module">
-    // Важно: версия в URL, чтобы обходить кэш браузера/SW при обновлении контента
     import { CONTENT } from './content.js?v=3';
 
-    // Регистрация Service Worker
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(console.error));
     }
 
-    // ===== Хранилище состояний =====
-    const VIEWED_KEY = 'viewedDates';   // ["YYYY-MM-DD", ...]
-    const STARTED_KEY = 'startedFlag';  // нажата ли "Продолжить" в текущей сессии
+    const VIEWED_KEY = 'viewedDates';
+    const STARTED_KEY = 'startedFlag';
     const store = {
       get viewed(){ try { return JSON.parse(localStorage.getItem(VIEWED_KEY)||'[]'); } catch { return []; } },
       set viewed(v){ localStorage.setItem(VIEWED_KEY, JSON.stringify(Array.from(new Set(v)))); },
@@ -181,13 +203,7 @@ body{
       set started(v){ v ? sessionStorage.setItem(STARTED_KEY,'1') : sessionStorage.removeItem(STARTED_KEY); }
     };
 
-    // ===== Дата по Москве с порогом 08:00 =====
-    /**
-     * Возвращает "YYYY-MM-DD" для эффективного московского дня.
-     * Если в Москве до 08:00 — возвращается вчерашний календарный день, иначе — сегодня.
-     * Примеры:
-     *  • 07:59 MSK → вчера; • 08:00 MSK → сегодня.
-     */
+    /** Возвращает "YYYY-MM-DD" с порогом 08:00 MSK */
     function getEffectiveMoscowDate(){
       const now = new Date();
       const parts = new Intl.DateTimeFormat('ru-RU', {
@@ -198,16 +214,15 @@ body{
       let y=get('year'), m=get('month'), d=get('day');
       const hour=get('hour');
       if (hour < 8){ const p=prevDate(y,m,d); y=p.y; m=p.m; d=p.d; }
-      const s = `${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-      console.debug('[MSK effective date]', s);
-      return s;
+      return `${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
     }
     function isLeap(y){ return (y%4===0 && y%100!==0) || (y%400===0); }
     function dim(y,m){ return [0,31,isLeap(y)?29:28,31,30,31,30,31,31,30,31,30,31][m]; }
     function prevDate(y,m,d){ if(d>1) return {y,m,d:d-1}; if(m>1){const pm=m-1; return {y,m:pm,d:dim(y,pm)};} return {y:y-1,m:12,d:31}; }
 
-    // ===== Роутер =====
     const $view = document.getElementById('view');
+    window.addEventListener('hashchange', route);
+    window.addEventListener('load', route);
     function route(){
       const hash = location.hash || '#/start';
       const [_, root, param] = hash.split('/');
@@ -219,10 +234,7 @@ body{
         default: location.hash = '#/start';
       }
     }
-    window.addEventListener('hashchange', route);
-    window.addEventListener('load', route);
 
-    // ===== Вьюхи =====
     function renderStart(){
       $view.innerHTML = `
         <section class="start" id="start">
@@ -250,22 +262,57 @@ body{
     }
 
     function renderDay(dateStr, markFromToday=false){
-      const item = CONTENT.find(x => x.date === dateStr);
-      if (!item) {
+      const idx = CONTENT.findIndex(x => x.date === dateStr);
+      const item = CONTENT[idx];
+      if (idx === -1 || !item) {
         $view.innerHTML = `<section class="day"><div class="caption">Запись не найдена (${dateStr}). Обновите <code>content.js</code>.</div></section>`;
         return;
       }
+      const effective = getEffectiveMoscowDate();
+      const canPrev = idx > 0;
+      const canNext = idx < CONTENT.length - 1 && CONTENT[idx + 1].date <= effective; // правая стрелка пропадает на «сегодня»
+
       $view.innerHTML = `
         <section class="day" aria-label="Экран дня">
           <img class="media" alt="Картинка дня ${dateStr}" src="${item.img}" id="media"/>
+          <button class="nav-arrow left ${canPrev?'':'hidden'}" id="prevBtn" aria-label="Предыдущий день" title="Предыдущий день">‹</button>
+          <button class="nav-arrow right ${canNext?'':'hidden'}" id="nextBtn" aria-label="Следующий день" title="Следующий день">›</button>
           <div class="caption" id="caption">${escapeHtml(item.caption)}</div>
         </section>
       `;
+
       if (store.started && (markFromToday || location.hash.startsWith('#/day/'))) {
         const v = store.viewed; if (!v.includes(dateStr)) { v.push(dateStr); store.viewed = v; }
       }
-      // Если хочется "contain" вместо "cover", можно раскомментировать:
-      // document.getElementById('media').style.objectFit = 'contain';
+
+      // Навигация стрелками
+      const prevBtn = document.getElementById('prevBtn');
+      const nextBtn = document.getElementById('nextBtn');
+
+      if (canPrev && prevBtn) {
+        prevBtn.addEventListener('click', () => {
+          const prevDateStr = CONTENT[idx - 1].date;
+          location.hash = '#/day/' + prevDateStr;
+        });
+      }
+      if (canNext && nextBtn) {
+        nextBtn.addEventListener('click', () => {
+          const nextDateStr = CONTENT[idx + 1].date;
+          location.hash = '#/day/' + nextDateStr;
+        });
+      }
+
+      // Небольшой свайп-жест (по желанию пользователя; без библиотек)
+      let touchX=null;
+      $view.querySelector('.day').addEventListener('touchstart', e=>{ touchX = e.changedTouches[0].clientX; }, {passive:true});
+      $view.querySelector('.day').addEventListener('touchend', e=>{
+        if (touchX==null) return;
+        const dx = e.changedTouches[0].clientX - touchX;
+        const thresh = 40; // «разумное» значение
+        if (dx > thresh && canPrev) prevBtn?.click();
+        else if (dx < -thresh && canNext) nextBtn?.click();
+        touchX=null;
+      }, {passive:true});
     }
 
     function renderDays(){
@@ -285,7 +332,6 @@ body{
       });
     }
 
-    // ===== Утилиты =====
     function escapeHtml(s){ return String(s).replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
 
     if (!location.hash) location.hash = '#/start';
@@ -293,4 +339,3 @@ body{
   </script>
 </body>
 </html>
-
