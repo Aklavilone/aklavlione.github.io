@@ -8,14 +8,14 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Нежный День">
 
-  <!-- ИКОНКИ (реальные PNG-файлы) -->
+  <!-- ИКОНКИ (PNG) -->
   <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
   <link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512.png">
 
   <link rel="manifest" href="manifest.webmanifest" />
 
-  <!-- Нежные шрифты -->
+  <!-- Шрифты -->
   <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;600&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
@@ -30,8 +30,6 @@
       --accent:#fb7185;
       --text:#374151;
       --muted:#6b7280;
-      --gray-dark:#1f2937;
-      --gray:#9ca3af;
       --gray-light:#e5e7eb;
       --radius:14px;
       --fade-ms:1000ms;
@@ -57,54 +55,26 @@
 
     /* Топбар справа сверху */
     .topbar{
-      position:fixed;
-      top:env(safe-area-inset-top, 0);
-      left:env(safe-area-inset-left, 0);
-      right:env(safe-area-inset-right, 0);
-      height:56px;
-      display:flex;
-      align-items:center;
-      justify-content:flex-end;
-      padding:0 12px;
-      z-index:20;
-      background:transparent;
-      pointer-events:none;
+      position:fixed; top:env(safe-area-inset-top, 0); left:env(safe-area-inset-left, 0); right:env(safe-area-inset-right, 0);
+      height:56px; display:flex; align-items:center; justify-content:flex-end; padding:0 12px; z-index:20; background:transparent; pointer-events:none;
     }
     .btn-days{
-      pointer-events:auto;
-      display:inline-flex; align-items:center; gap:8px;
+      pointer-events:auto; display:inline-flex; align-items:center; gap:8px;
       border:1px solid rgba(251,113,133,0.4);
       color:var(--accent);
       background:rgba(255,241,242,0.6);
       backdrop-filter:saturate(150%) blur(6px);
-      padding:8px 12px;
-      border-radius:12px;
-      font-size:14px;
-      text-decoration:none;
-      user-select:none;
+      padding:8px 12px; border-radius:12px; font-size:14px; text-decoration:none; user-select:none;
     }
     .btn-days:active{transform:translateY(1px)}
 
     /* Стартовый экран */
-    .start{
-      display:flex; flex-direction:column; align-items:center; gap:18px;
-      text-align:center; max-width:520px; width:100%;
-      user-select:none; margin:auto;
-    }
-    .hello{
-      font-family:'Dancing Script','Comfortaa',cursive;
-      font-size:56px; line-height:1.1;
-      color:#be123c; text-shadow:0 2px 0 rgba(255,255,255,0.6);
-    }
+    .start{ display:flex; flex-direction:column; align-items:center; gap:18px; text-align:center; max-width:520px; width:100%; user-select:none; margin:auto; }
+    .hello{ font-family:'Dancing Script','Comfortaa',cursive; font-size:56px; line-height:1.1; color:#be123c; text-shadow:0 2px 0 rgba(255,255,255,0.6); }
     .btn-primary{
-      font:600 16px/1 'Comfortaa', sans-serif;
-      padding:14px 22px;
-      border:1.5px solid rgba(55,65,81,0.2);
-      background:#fff; color:var(--text);
-      border-radius:var(--radius);
-      min-width:220px; cursor:pointer;
-      transition:box-shadow .2s ease, transform .2s ease, opacity .2s ease;
-      user-select:none;
+      font:600 16px/1 'Comfortaa', sans-serif; padding:14px 22px;
+      border:1.5px solid rgba(55,65,81,0.2); background:#fff; color:var(--text);
+      border-radius:var(--radius); min-width:220px; cursor:pointer; transition:box-shadow .2s ease, transform .2s ease, opacity .2s ease; user-select:none;
     }
     .btn-primary:active{transform:translateY(1px)}
     .hint{ font-size:12px; color:var(--muted); }
@@ -112,46 +82,47 @@
     .hidden{display:none !important}
 
     /* Экран дня */
-    .day{
-      position:relative; width:100%; min-height:100%;
-      display:flex; align-items:center; justify-content:center;
-    }
+    .day{ position:relative; width:100%; min-height:100%; display:flex; align-items:center; justify-content:center; overflow:hidden; }
     .media{
-      position:absolute; inset:0;
-      width:100%; height:100%;
-      object-fit:cover; object-position:center;
-      background:#fff;
-      touch-action:manipulation;
-      -webkit-user-select:none; user-select:none;
+      position:absolute; inset:0; width:100%; height:100%;
+      object-fit:cover; object-position:center; background:#fff; touch-action:manipulation; -webkit-user-select:none; user-select:none;
     }
     .caption{
       position:absolute; left:16px; right:16px; bottom:24px;
       padding:10px 14px; border-radius:16px;
       background:rgba(255,241,242,0.86); color:#991b1b;
-      font-family:'Dancing Script','Comfortaa',cursive;
-      font-size:22px; text-align:center;
-      box-shadow:0 6px 20px rgba(251,113,133,0.22);
-      backdrop-filter:blur(8px);
-      z-index:4;
+      font-family:'Dancing Script','Comfortaa',cursive; font-size:22px; text-align:center;
+      box-shadow:0 6px 20px rgba(251,113,133,0.22); backdrop-filter:blur(8px); z-index:4;
     }
 
-    /* Стрелки-навигации по дням */
+    /* Стрелки-навигации по дням — полупрозрачные */
     .nav-arrow{
       position:absolute; top:50%; transform:translateY(-50%);
-      width:44px; height:44px;
-      display:flex; align-items:center; justify-content:center;
-      font-size:22px; line-height:1; font-weight:700;
+      width:44px; height:44px; display:flex; align-items:center; justify-content:center;
+      font-size:22px; font-weight:700; line-height:1;
       color:var(--accent);
-      background:rgba(255,241,242,0.6);
-      border:1px solid rgba(251,113,133,0.4);  /* рамка как у кнопки «Дни» */
+      background:rgba(255,241,242,0.5);  /* полупрозрачный фон */
+      border:1px solid rgba(251,113,133,0.45); /* рамка как у «Дни» */
       border-radius:12px;
       box-shadow:0 6px 16px rgba(251,113,133,0.18);
       user-select:none; cursor:pointer; z-index:5;
       backdrop-filter:saturate(150%) blur(6px);
+      opacity:.85; transition:opacity .2s ease, transform .2s ease, background-color .2s ease;
     }
-    .nav-arrow:active{ transform:translateY(-50%) scale(0.98); }
+    .nav-arrow:hover{ opacity:1; }
+    .nav-arrow:active{ transform:translateY(-50%) scale(0.98); opacity:1; }
     .nav-arrow.left{ left:10px; }
     .nav-arrow.right{ right:10px; }
+
+    /* Анимации перелистывания */
+    @keyframes dayInFromRight { from { transform: translateX(24%); opacity: .01; } to { transform: translateX(0); opacity: 1; } }
+    @keyframes dayInFromLeft  { from { transform: translateX(-24%); opacity: .01; } to { transform: translateX(0); opacity: 1; } }
+    @keyframes capFadeUp { from { transform: translateY(6px); opacity:.01; } to { transform:none; opacity:1; } }
+
+    .day.anim-right-in { animation: dayInFromRight .35s cubic-bezier(.2,.6,.2,1) both; }
+    .day.anim-left-in  { animation: dayInFromLeft  .35s cubic-bezier(.2,.6,.2,1) both; }
+    .day.anim-right-in .caption,
+    .day.anim-left-in  .caption { animation: capFadeUp .35s ease .08s both; }
 
     /* Экран «Дни» */
     .days{ width:100%; max-width:900px; margin:70px auto 24px; padding:0 16px; }
@@ -168,15 +139,18 @@
     .tile.available{ background:#111827; }
     .tile.future{ background:var(--gray-light); color:#6b7280; pointer-events:none; cursor:default; opacity:.8; }
     .tile.viewed{ background:#000; color:#fff; }
-    .tile.viewed .bg{
-      position:absolute; inset:0; background-size:cover; background-position:center;
-      filter:blur(8px); transform:scale(1.05); opacity:.9;
-    }
+    .tile.viewed .bg{ position:absolute; inset:0; background-size:cover; background-position:center; filter:blur(8px); transform:scale(1.05); opacity:.9; }
     .tile.viewed::after{ content:""; position:absolute; inset:0; background:linear-gradient(to bottom, rgba(0,0,0,.3), rgba(0,0,0,.45)); }
 
     .sr-only{ position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
     a,button{ -webkit-user-select:none; user-select:none; }
     img{ -webkit-user-drag:none; }
+
+    /* Уважение настроек пользователя */
+    @media (prefers-reduced-motion: reduce){
+      .day.anim-right-in, .day.anim-left-in { animation: none; }
+      .day.anim-right-in .caption, .day.anim-left-in .caption { animation: none; }
+    }
   </style>
 </head>
 <body>
@@ -203,7 +177,7 @@
       set started(v){ v ? sessionStorage.setItem(STARTED_KEY,'1') : sessionStorage.removeItem(STARTED_KEY); }
     };
 
-    /** Возвращает "YYYY-MM-DD" с порогом 08:00 MSK */
+    /** «Эффективная» дата по Москве с порогом 08:00 */
     function getEffectiveMoscowDate(){
       const now = new Date();
       const parts = new Intl.DateTimeFormat('ru-RU', {
@@ -223,6 +197,10 @@
     const $view = document.getElementById('view');
     window.addEventListener('hashchange', route);
     window.addEventListener('load', route);
+
+    // Для анимации: запоминаем последний индекс дня
+    let lastDayIndex = null;
+
     function route(){
       const hash = location.hash || '#/start';
       const [_, root, param] = hash.split('/');
@@ -256,6 +234,7 @@
       const item = CONTENT.find(x => x.date === effective);
       if (!item) {
         $view.innerHTML = `<section class="day"><div class="caption">Нет контента для ${effective}. Замените данные в <code>content.js</code>.</div></section>`;
+        lastDayIndex = null;
         return;
       }
       renderDay(item.date, true);
@@ -266,14 +245,21 @@
       const item = CONTENT[idx];
       if (idx === -1 || !item) {
         $view.innerHTML = `<section class="day"><div class="caption">Запись не найдена (${dateStr}). Обновите <code>content.js</code>.</div></section>`;
+        lastDayIndex = null;
         return;
       }
       const effective = getEffectiveMoscowDate();
       const canPrev = idx > 0;
-      const canNext = idx < CONTENT.length - 1 && CONTENT[idx + 1].date <= effective; // правая стрелка пропадает на «сегодня»
+      const canNext = idx < CONTENT.length - 1 && CONTENT[idx + 1].date <= effective;
+
+      // Определяем направление для анимации
+      let dirClass = '';
+      if (lastDayIndex !== null) {
+        dirClass = idx > lastDayIndex ? 'anim-right-in' : (idx < lastDayIndex ? 'anim-left-in' : '');
+      }
 
       $view.innerHTML = `
-        <section class="day" aria-label="Экран дня">
+        <section class="day ${dirClass}" aria-label="Экран дня">
           <img class="media" alt="Картинка дня ${dateStr}" src="${item.img}" id="media"/>
           <button class="nav-arrow left ${canPrev?'':'hidden'}" id="prevBtn" aria-label="Предыдущий день" title="Предыдущий день">‹</button>
           <button class="nav-arrow right ${canNext?'':'hidden'}" id="nextBtn" aria-label="Следующий день" title="Следующий день">›</button>
@@ -281,34 +267,26 @@
         </section>
       `;
 
+      lastDayIndex = idx;
+
       if (store.started && (markFromToday || location.hash.startsWith('#/day/'))) {
         const v = store.viewed; if (!v.includes(dateStr)) { v.push(dateStr); store.viewed = v; }
       }
 
-      // Навигация стрелками
+      // Клики по стрелкам
       const prevBtn = document.getElementById('prevBtn');
       const nextBtn = document.getElementById('nextBtn');
+      if (canPrev && prevBtn) prevBtn.addEventListener('click', () => { location.hash = '#/day/' + CONTENT[idx - 1].date; });
+      if (canNext && nextBtn) nextBtn.addEventListener('click', () => { location.hash = '#/day/' + CONTENT[idx + 1].date; });
 
-      if (canPrev && prevBtn) {
-        prevBtn.addEventListener('click', () => {
-          const prevDateStr = CONTENT[idx - 1].date;
-          location.hash = '#/day/' + prevDateStr;
-        });
-      }
-      if (canNext && nextBtn) {
-        nextBtn.addEventListener('click', () => {
-          const nextDateStr = CONTENT[idx + 1].date;
-          location.hash = '#/day/' + nextDateStr;
-        });
-      }
-
-      // Небольшой свайп-жест (по желанию пользователя; без библиотек)
+      // Свайпы
+      const dayEl = $view.querySelector('.day');
       let touchX=null;
-      $view.querySelector('.day').addEventListener('touchstart', e=>{ touchX = e.changedTouches[0].clientX; }, {passive:true});
-      $view.querySelector('.day').addEventListener('touchend', e=>{
+      dayEl.addEventListener('touchstart', e=>{ touchX = e.changedTouches[0].clientX; }, {passive:true});
+      dayEl.addEventListener('touchend', e=>{
         if (touchX==null) return;
         const dx = e.changedTouches[0].clientX - touchX;
-        const thresh = 40; // «разумное» значение
+        const thresh = 40;
         if (dx > thresh && canPrev) prevBtn?.click();
         else if (dx < -thresh && canNext) nextBtn?.click();
         touchX=null;
@@ -327,7 +305,7 @@
       }).join('');
       $view.innerHTML = `<section class="days" aria-label="Обзор на 30 дней"><div class="grid">${tiles}</div></section>`;
       $view.querySelectorAll('.tile.available, .tile.viewed').forEach(t=>{
-        t.addEventListener('click', ()=> location.hash = '#/day/' + t.getAttribute('data-date'));
+        t.addEventListener('click', ()=> { lastDayIndex = null; location.hash = '#/day/' + t.getAttribute('data-date'); });
         t.addEventListener('keydown', e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); t.click(); }});
       });
     }
