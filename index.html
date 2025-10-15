@@ -8,7 +8,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Нежный День">
 
-  <!-- ИКОНКИ (PNG) -->
+  <!-- ИКОНКИ (реальные PNG-файлы) -->
   <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
   <link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512.png">
@@ -33,6 +33,10 @@
       --gray-light:#e5e7eb;
       --radius:14px;
       --fade-ms:1000ms;
+
+      /* Для плавной анимации перелистывания */
+      --slide-ms: 520ms;                         /* длительность */
+      --slide-ease: cubic-bezier(.22,.61,.36,1); /* мягкая кривая */
     }
     *{box-sizing:border-box}
 
@@ -86,6 +90,7 @@
     .media{
       position:absolute; inset:0; width:100%; height:100%;
       object-fit:cover; object-position:center; background:#fff; touch-action:manipulation; -webkit-user-select:none; user-select:none;
+      will-change: transform, opacity;
     }
     .caption{
       position:absolute; left:16px; right:16px; bottom:24px;
@@ -93,36 +98,49 @@
       background:rgba(255,241,242,0.86); color:#991b1b;
       font-family:'Dancing Script','Comfortaa',cursive; font-size:22px; text-align:center;
       box-shadow:0 6px 20px rgba(251,113,133,0.22); backdrop-filter:blur(8px); z-index:4;
+      will-change: transform, opacity;
     }
 
-    /* Стрелки-навигации по дням — полупрозрачные */
+    /* Стрелки-навигации по дням — полупрозрачные, гладкие */
     .nav-arrow{
       position:absolute; top:50%; transform:translateY(-50%);
       width:44px; height:44px; display:flex; align-items:center; justify-content:center;
       font-size:22px; font-weight:700; line-height:1;
       color:var(--accent);
-      background:rgba(255,241,242,0.5);  /* полупрозрачный фон */
-      border:1px solid rgba(251,113,133,0.45); /* рамка как у «Дни» */
+      background:rgba(255,241,242,0.5);
+      border:1px solid rgba(251,113,133,0.45);
       border-radius:12px;
       box-shadow:0 6px 16px rgba(251,113,133,0.18);
       user-select:none; cursor:pointer; z-index:5;
       backdrop-filter:saturate(150%) blur(6px);
-      opacity:.85; transition:opacity .2s ease, transform .2s ease, background-color .2s ease;
+      opacity:.8; transition:opacity .25s ease, transform .25s ease;
+      will-change: transform, opacity;
     }
     .nav-arrow:hover{ opacity:1; }
     .nav-arrow:active{ transform:translateY(-50%) scale(0.98); opacity:1; }
     .nav-arrow.left{ left:10px; }
     .nav-arrow.right{ right:10px; }
 
-    /* Анимации перелистывания */
-    @keyframes dayInFromRight { from { transform: translateX(24%); opacity: .01; } to { transform: translateX(0); opacity: 1; } }
-    @keyframes dayInFromLeft  { from { transform: translateX(-24%); opacity: .01; } to { transform: translateX(0); opacity: 1; } }
-    @keyframes capFadeUp { from { transform: translateY(6px); opacity:.01; } to { transform:none; opacity:1; } }
+    /* Плавные анимации перелистывания (GPU) */
+    @keyframes slideInRight {
+      0%   { transform: translate3d(18%,0,0); opacity: 0.001; }
+      70%  { transform: translate3d(2%,0,0);  opacity: 0.95; }
+      100% { transform: translate3d(0,0,0);   opacity: 1; }
+    }
+    @keyframes slideInLeft {
+      0%   { transform: translate3d(-18%,0,0); opacity: 0.001; }
+      70%  { transform: translate3d(-2%,0,0);  opacity: 0.95; }
+      100% { transform: translate3d(0,0,0);    opacity: 1; }
+    }
+    @keyframes capFadeUp {
+      from { transform: translateY(6px); opacity:.01; }
+      to   { transform: none;            opacity:1; }
+    }
 
-    .day.anim-right-in { animation: dayInFromRight .35s cubic-bezier(.2,.6,.2,1) both; }
-    .day.anim-left-in  { animation: dayInFromLeft  .35s cubic-bezier(.2,.6,.2,1) both; }
+    .day.anim-right-in { animation: slideInRight var(--slide-ms) var(--slide-ease) both; }
+    .day.anim-left-in  { animation: slideInLeft  var(--slide-ms) var(--slide-ease) both; }
     .day.anim-right-in .caption,
-    .day.anim-left-in  .caption { animation: capFadeUp .35s ease .08s both; }
+    .day.anim-left-in  .caption { animation: capFadeUp calc(var(--slide-ms) - 120ms) ease .08s both; }
 
     /* Экран «Дни» */
     .days{ width:100%; max-width:900px; margin:70px auto 24px; padding:0 16px; }
@@ -164,6 +182,7 @@
   <script type="module">
     import { CONTENT } from './content.js?v=3';
 
+    // SW
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(console.error));
     }
@@ -177,7 +196,7 @@
       set started(v){ v ? sessionStorage.setItem(STARTED_KEY,'1') : sessionStorage.removeItem(STARTED_KEY); }
     };
 
-    /** «Эффективная» дата по Москве с порогом 08:00 */
+    /** «Эффективная» дата по Москве с порогом 08:00 (см. ТЗ) */
     function getEffectiveMoscowDate(){
       const now = new Date();
       const parts = new Intl.DateTimeFormat('ru-RU', {
@@ -240,6 +259,15 @@
       renderDay(item.date, true);
     }
 
+    // Переход с View Transitions API (если доступен)
+    function navToDate(dateStr){
+      if (document.startViewTransition) {
+        document.startViewTransition(() => { location.hash = '#/day/' + dateStr; });
+      } else {
+        location.hash = '#/day/' + dateStr;
+      }
+    }
+
     function renderDay(dateStr, markFromToday=false){
       const idx = CONTENT.findIndex(x => x.date === dateStr);
       const item = CONTENT[idx];
@@ -250,9 +278,9 @@
       }
       const effective = getEffectiveMoscowDate();
       const canPrev = idx > 0;
-      const canNext = idx < CONTENT.length - 1 && CONTENT[idx + 1].date <= effective;
+      const canNext = idx < CONTENT.length - 1 && CONTENT[idx + 1].date <= effective; // правая стрелка пропадает на «сегодня»
 
-      // Определяем направление для анимации
+      // Направление для анимации
       let dirClass = '';
       if (lastDayIndex !== null) {
         dirClass = idx > lastDayIndex ? 'anim-right-in' : (idx < lastDayIndex ? 'anim-left-in' : '');
@@ -273,11 +301,11 @@
         const v = store.viewed; if (!v.includes(dateStr)) { v.push(dateStr); store.viewed = v; }
       }
 
-      // Клики по стрелкам
+      // Клики по стрелкам с плавным переходом
       const prevBtn = document.getElementById('prevBtn');
       const nextBtn = document.getElementById('nextBtn');
-      if (canPrev && prevBtn) prevBtn.addEventListener('click', () => { location.hash = '#/day/' + CONTENT[idx - 1].date; });
-      if (canNext && nextBtn) nextBtn.addEventListener('click', () => { location.hash = '#/day/' + CONTENT[idx + 1].date; });
+      if (canPrev && prevBtn) prevBtn.addEventListener('click', () => navToDate(CONTENT[idx - 1].date));
+      if (canNext && nextBtn) nextBtn.addEventListener('click', () => navToDate(CONTENT[idx + 1].date));
 
       // Свайпы
       const dayEl = $view.querySelector('.day');
@@ -305,7 +333,7 @@
       }).join('');
       $view.innerHTML = `<section class="days" aria-label="Обзор на 30 дней"><div class="grid">${tiles}</div></section>`;
       $view.querySelectorAll('.tile.available, .tile.viewed').forEach(t=>{
-        t.addEventListener('click', ()=> { lastDayIndex = null; location.hash = '#/day/' + t.getAttribute('data-date'); });
+        t.addEventListener('click', ()=> { lastDayIndex = null; navToDate(t.getAttribute('data-date')); });
         t.addEventListener('keydown', e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); t.click(); }});
       });
     }
